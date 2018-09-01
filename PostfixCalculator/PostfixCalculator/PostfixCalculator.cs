@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace PostfixCalculator
 {
@@ -10,13 +10,18 @@ namespace PostfixCalculator
         private const string SUBTRACTION = "-";
         private const string MULTIPLICATION = "*";
         private const string DIVISION = "/";
-        private const string MODULUS = "%";
 
-        private Stack<int> values;
+        private Stack<int> _values;
+        private Dictionary<string, Func<int, int, int>> _operations;
 
         public PostfixCalculator()
         {
-            values = new Stack<int>();
+            _values = new Stack<int>();
+            _operations = new Dictionary<string, Func<int, int, int>>();
+            _operations.Add(ADDITION, Sum);
+            _operations.Add(SUBTRACTION, Subtract);
+            _operations.Add(MULTIPLICATION, Multiply);
+            _operations.Add(DIVISION, Divide);
         }
 
         public int Calculate(IEnumerable<string> tokens)
@@ -25,43 +30,49 @@ namespace PostfixCalculator
             {
                 if (int.TryParse(token, out int number))
                 {
-                    values.Push(number);
+                    _values.Push(number);
                 }
                 else
                 {
-                    var rightOperand = values.Pop();
-                    var leftOperand = values.Pop();
-
-                    if (token == ADDITION)
-                    {
-                        var result = leftOperand + rightOperand;
-                        values.Push(result);
-                    }
-                    else if (token == SUBTRACTION)
-                    {
-                        var operationResult = leftOperand - rightOperand;
-                        values.Push(operationResult);
-                    }
-                    else if (token == MULTIPLICATION)
-                    {
-                        var result = leftOperand * rightOperand;
-                        values.Push(result);
-                    }
-                    else if (token == DIVISION)
-                    {
-                        var result = leftOperand / rightOperand;
-                        values.Push(result);
-                    }
-                    else if (token == MODULUS)
-                    {
-                        var result = leftOperand % rightOperand;
-                        values.Push(result);
-                    }
+                    PerformOperation(token);
                 }
             }
 
-            var finalResult = values.Pop();
+            var finalResult = _values.Pop();
             return finalResult;
+        }
+
+        private void PerformOperation(string token)
+        {
+            if (!_operations.Keys.Contains(token))
+            {
+                throw new ArgumentException($"Unrecognized token: {token}");
+            }
+
+            var rightOperand = _values.Pop();
+            var leftOperand = _values.Pop();
+            var result = _operations[token].Invoke(rightOperand, leftOperand);
+            _values.Push(result);
+        }
+
+        private int Sum(int leftOperand, int rightOperand)
+        {
+            return leftOperand + rightOperand;
+        }
+
+        private int Subtract(int leftOperand, int rightOperand)
+        {
+            return leftOperand - rightOperand;
+        }
+
+        private int Multiply(int leftOperand, int rightOperand)
+        {
+            return leftOperand * rightOperand;
+        }
+
+        private int Divide(int leftOperand, int rightOperand)
+        {
+            return leftOperand / rightOperand;
         }
     }
 }

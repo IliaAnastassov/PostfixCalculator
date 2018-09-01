@@ -1,21 +1,28 @@
 ﻿using System;
+using static System.Console;
 
 namespace PostfixCalculator
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
+            WriteLine("Enter the expression to calculate in postfix notation:");
+            var userInput = ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
-
-            foreach (var token in args)
+            try
             {
-                int number;
-
-                if (int.TryParse(token, out number))
-                {
-
-                }
+                var calculator = new PostfixCalculator();
+                var result = calculator.Calculate(userInput);
+                WriteLine(result);
+            }
+            catch (ArgumentException argEx)
+            {
+                WriteLine(argEx.Message);
+            }
+            catch (Exception)
+            {
+                WriteLine("Something went wrong. Please verify the expression and try again.");
             }
         }
     }
