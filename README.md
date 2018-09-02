@@ -1,3 +1,3 @@
 # PostfixCalculator
 
-A simple calculator using postfix notation, implemented in .NET Core.
+A simple postfix calculator for demo purposes, implemented in .NET Core.
