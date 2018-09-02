@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace PostfixCalculator
 {
+    /// <summary>
+    /// A simple calculator using postfix notation.
+    /// </summary>
     public class PostfixCalculator
     {
         private const string ADDITION = "+";
@@ -16,6 +19,9 @@ namespace PostfixCalculator
         private Stack<int> _values;
         private Dictionary<string, Func<int, int, int>> _operations;
 
+        /// <summary>
+        /// Creates a new instance of the PostfixCalculator.
+        /// </summary>
         public PostfixCalculator()
         {
             _values = new Stack<int>();
@@ -26,6 +32,11 @@ namespace PostfixCalculator
             _operations.Add(DIVISION, Divide);
         }
 
+        /// <summary>
+        /// Calculates the given expression.
+        /// </summary>
+        /// <param name="expression">The expression to calculate.</param>
+        /// <returns>The result of the expression.</returns>
         public int Calculate(string expression)
         {
             var tokens = ExtractTokens(expression);
