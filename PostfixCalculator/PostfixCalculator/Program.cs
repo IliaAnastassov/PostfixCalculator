@@ -7,13 +7,13 @@ namespace PostfixCalculator
     {
         static void Main()
         {
-            WriteLine("Enter the expression to calculate in postfix notation:");
-            var userInput = ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            WriteLine(Messages.WELCOME);
+            var expression = ReadLine();
 
             try
             {
                 var calculator = new PostfixCalculator();
-                var result = calculator.Calculate(userInput);
+                var result = calculator.Calculate(expression);
                 WriteLine(result);
             }
             catch (ArgumentException argEx)
@@ -22,7 +22,7 @@ namespace PostfixCalculator
             }
             catch (Exception)
             {
-                WriteLine("Something went wrong. Please verify the expression and try again.");
+                WriteLine(Messages.ERROR);
             }
         }
     }

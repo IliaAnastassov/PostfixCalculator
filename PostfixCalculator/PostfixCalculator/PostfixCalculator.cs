@@ -11,6 +11,8 @@ namespace PostfixCalculator
         private const string MULTIPLICATION = "*";
         private const string DIVISION = "/";
 
+        private const string WHITESPACE = " ";
+
         private Stack<int> _values;
         private Dictionary<string, Func<int, int, int>> _operations;
 
@@ -24,8 +26,10 @@ namespace PostfixCalculator
             _operations.Add(DIVISION, Divide);
         }
 
-        public int Calculate(IEnumerable<string> tokens)
+        public int Calculate(string expression)
         {
+            var tokens = ExtractTokens(expression);
+
             foreach (var token in tokens)
             {
                 if (int.TryParse(token, out int number))
@@ -42,11 +46,16 @@ namespace PostfixCalculator
             return finalResult;
         }
 
+        private IEnumerable<string> ExtractTokens(string expression)
+        {
+            return expression.Split(WHITESPACE, StringSplitOptions.RemoveEmptyEntries);
+        }
+
         private void PerformOperation(string token)
         {
             if (!_operations.Keys.Contains(token))
             {
-                throw new ArgumentException($"Unrecognized token: {token}");
+                throw new ArgumentException(string.Format(Messages.INVALID_TOKEN, token));
             }
 
             var rightOperand = _values.Pop();
