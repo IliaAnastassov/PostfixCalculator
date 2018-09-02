@@ -49,7 +49,8 @@ namespace PostfixCalculator
                 }
                 else
                 {
-                    PerformOperation(token);
+                    var result = PerformOperation(token);
+                    _values.Push(result);
                 }
             }
 
@@ -62,7 +63,7 @@ namespace PostfixCalculator
             return expression.Split(WHITESPACE, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private void PerformOperation(string token)
+        private int PerformOperation(string token)
         {
             if (!_operations.Keys.Contains(token))
             {
@@ -71,8 +72,7 @@ namespace PostfixCalculator
 
             var rightOperand = _values.Pop();
             var leftOperand = _values.Pop();
-            var result = _operations[token].Invoke(rightOperand, leftOperand);
-            _values.Push(result);
+            return _operations[token].Invoke(rightOperand, leftOperand);
         }
 
         private int Sum(int leftOperand, int rightOperand)
